@@ -1,0 +1,39 @@
+version: "2.1"
+services:
+  register:
+    image: "registry:2"
+    container_name: "private-registry"
+    restart: always
+    ports: 
+      - "5000:5000"
+    volumes:
+      - /Volumes/Macintosh HD/Extends/data/docker_registry/data:/var/lib/registry
+      - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.crt:/certs/auth.crt
+    environment:
+      - REGISTRY_AUTH=token
+      - REGISTRY_AUTH_TOKEN_REALM=http://172.28.210.141:8000/authorize
+      - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
+      - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
+      - REGISTRY_HTTP_SECRET=""
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/auth.crt
+  auth:
+    image: "cesanta/docker_auth"
+    container_name: "private-registry-auth"
+    restart: always
+    ports:
+      - "8000:5001"
+    volumes:
+      - /Volumes/Macintosh HD/Extends/data/docker_registry/auth_log:/logs
+      - "/Volumes/Macintosh HD/Extends/data/docker_registry/config:/config"
+      - "/Volumes/Macintosh HD/Extends/data/docker_registry/certs:/certs"
+  registr-ui:
+    image: "konradkleine/docker-registry-frontend:v2"
+    container_name: "private-registry-ui"
+    environment:
+      #修改为自己的私有库网址或host ip
+      - ENV_DOCKER_REGISTRY_HOST=docker.hunantv.com
+      - ENV_DOCKER_REGISTRY_PORT=80
+    ports:
+      - "8080:80"
+    depends_on:
+      - register
