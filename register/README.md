@@ -2,7 +2,6 @@
 
 - create registry store directory, and bind on `docker-compose` : `volumes`
 - create certs file and bind on `docker-compose` : `volumes`
-- modify `logging` field: `fluentd-address` to  your server ip
 - nginx config: `nginx.conf`
 
 
@@ -14,3 +13,7 @@
 - https://hub.docker.com/_/registry/
 - https://github.com/huyinghuan/docker_auth
 - https://github.com/huyinghuan/docker-registry-frontend
+
+## fluentd
+
+https://docs.fluentd.org/v1.0/articles/config-file

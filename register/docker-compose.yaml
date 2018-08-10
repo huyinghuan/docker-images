@@ -19,12 +19,14 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: 172.28.210.141:24224
+        fluentd-address: localhost:24224
+        tag: "docker.{{.Name}}"
     depends_on:
       - registry-log
       - registry-auth-server
       - registry-ui
-      
+    networks: 
+      - fluentd
   registry-auth-server:
     image: "huyinghuan/docker-registry-auth:1.0"
     container_name: "registry-auth-server"
@@ -38,6 +40,8 @@ services:
       - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
       - REGISTRY_AUTH_TOKEN_EXPIRATION=900
       - REGISTRY_AUTH_TOKEN_DEBUG=false
+    networks: 
+      - fluentd
   registry-ui:
     image: "huyinghuan/docker-registry-frontend:v2"
     container_name: "registry-ui"
@@ -47,6 +51,8 @@ services:
       - ENV_DOCKER_REGISTRY_UI_AUTH=true
     ports:
       - "5001:5001"
+    networks: 
+      - fluentd
   registry-log:
     image: "fluent/fluentd:latest"
     container_name: "registry-log"
@@ -55,3 +61,8 @@ services:
       - "24224:24224/udp"
     volumes:
       - /Volumes/Macintosh HD/Extends/data/log:/fluentd/log
+    networks: 
+      - fluentd
+networks:
+  fluentd:
+    driver: bridge
