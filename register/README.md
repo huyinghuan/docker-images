@@ -2,7 +2,7 @@
 
 - create registry store directory, and bind on `docker-compose` : `volumes`
 - create certs file and bind on `docker-compose` : `volumes`
-- modify  `docker-compose` bind yourself ip
+- modify `logging` field: `fluentd-address` to  your server ip
 - nginx config: `nginx.conf`
 
 
