@@ -1,5 +1,16 @@
-## 如何使用
+## How to use
 
-- 创建`/data`目录使其有`rw`权限
-- 安装nginx, 使用配置文件 `nginx.conf`,根据需要自己修改
+- create registry store directory, and bind on `docker-compose` : `volumes`
+- create certs file and bind on `docker-compose` : `volumes`
+- modify  `docker-compose` bind yourself ip
+- nginx config: `nginx.conf`
 
+
+## How to create certs
+
+`openssl req -newkey rsa:4096 -nodes -sha256 -keyout auth.key -x509 -days 365 -out auth.crt`
+
+## GITHUB
+- https://hub.docker.com/_/registry/
+- https://github.com/huyinghuan/docker_auth
+- https://github.com/huyinghuan/docker-registry-frontend
