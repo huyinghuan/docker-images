@@ -11,7 +11,7 @@ services:
       - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.crt:/certs/auth.crt
     environment:
       - REGISTRY_AUTH=token
-      - REGISTRY_AUTH_TOKEN_REALM=http://registry-auth-server:8000/authorize
+      - REGISTRY_AUTH_TOKEN_REALM=http://docker.hunantv.com/authorize #point to registry-auth-server domain, see example nginx.conf
       - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
       - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
       - REGISTRY_HTTP_SECRET=""
@@ -37,7 +37,7 @@ services:
       - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.crt:/go/src/docker_auth/certs/auth.crt
       - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.key:/go/src/docker_auth/certs/auth.key
     environment:
-      - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
+      - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service" #the same with registry.environment.REGISTRY_AUTH_TOKEN_SERVICE
       - REGISTRY_AUTH_TOKEN_EXPIRATION=900
       - REGISTRY_AUTH_TOKEN_DEBUG=false
     networks: 

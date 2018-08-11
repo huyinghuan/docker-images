@@ -1,5 +1,5 @@
 ## How to use
-
+- modify `docker-compose.yaml`:  `registry`.`environment`.`REGISTRY_AUTH_TOKEN_REALM` the domain
 - create registry store directory, and bind on `docker-compose` : `volumes`
 - create certs file and bind on `docker-compose` : `volumes`
 - nginx config: `nginx.conf`
