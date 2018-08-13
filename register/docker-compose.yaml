@@ -11,7 +11,7 @@ services:
       - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.crt:/certs/auth.crt
     environment:
       - REGISTRY_AUTH=token
-      - REGISTRY_AUTH_TOKEN_REALM=http://docker.hunantv.com/authorize #point to registry-auth-server domain, see example nginx.conf
+      - REGISTRY_AUTH_TOKEN_REALM=http://172.28.210.141:8000/authorize #point to registry-auth-server domain, see example nginx.conf
       - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
       - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
       - REGISTRY_HTTP_SECRET=""
@@ -40,11 +40,18 @@ services:
       - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service" #the same with registry.environment.REGISTRY_AUTH_TOKEN_SERVICE
       - REGISTRY_AUTH_TOKEN_EXPIRATION=900
       - REGISTRY_AUTH_TOKEN_DEBUG=false
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        tag: "docker.{{.Name}}"
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_USER=admin
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_PASS=12345678
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_API=__registry
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_DATABASE="root:12345678@tcp(db:3300)/docker_auth"
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     fluentd-address: localhost:24224
+    #     tag: "docker.{{.Name}}"
+    depends_on:
+      db:
+        condition: service_healthy
     networks: 
       fluentd:
   registry-ui:
@@ -73,6 +80,24 @@ services:
     volumes:
       - /Volumes/Macintosh HD/Extends/data/log:/fluentd/log
     networks: 
+      fluentd:
+  db:
+    image: mysql:latest
+    restart: always
+    #command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: docker_auth
+    ports:
+      - "3300:3306"
+    volumes:
+      - /Volumes/Macintosh HD/Extends/data/mysqldata:/var/lib/mysql
+    healthcheck: 
+      test: "/usr/bin/mysql --user=root --password=12345678 --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    networks:
       fluentd:
 networks:
   fluentd:
